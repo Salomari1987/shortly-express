@@ -25,11 +25,14 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/', 
 function(req, res) {
-  res.render('index');
+  res.redirect('/login');
 });
-
+app.get('/login',function(req,res){
+  res.render('login')
+});
 app.get('/create', 
 function(req, res) {
+
   res.render('index');
 });
 
