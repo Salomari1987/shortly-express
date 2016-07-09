@@ -8,23 +8,23 @@
   "private": true,
   "scripts": {
     "start": "./node_modules/.bin/nodemon --ignore node_modules shortly.js",
-    "test": "node shortly.js & ./node_modules/.bin/mocha --bail --reporter nyan test/ServerSpec.js; pkill -n node;"
+    "test": "node shortly.js & ./node_modules/.bin/mocha --bail --reporter nyan test/ServerSpec.js; killall node;"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "1.0.8",
     "body-parser": "^1.5.2",
-    "bookshelf": "~0.6.4",
+    "bookshelf": "~0.7.1",
     "chai": "^1.9.0",
     "ejs": "~0.8.5",
     "express": "~4.0.0",
     "express-partials": "~0.2.0",
     "express-session": "^1.7.2",
     "forever": "^0.10.11",
-    "knex": "~0.5.7",
+    "knex": "~0.6.10",
     "mocha": "^1.17.1",
     "nodemon": "^1.2.1",
     "request": "^2.34.0",
-    "sqlite3": "~3.0.5"
+    "sqlite3": "~3.1.0"
   }
 }
