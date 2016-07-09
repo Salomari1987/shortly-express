@@ -25,15 +25,39 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/', 
 function(req, res) {
-  res.redirect('/login');
+  //check if there is a username in the body
+  if(!req.body.username)
+     res.redirect('/login');
+  else{
+  var username=req.body.username;
+  new User({username:username}).fetch().then(function(found){
+    if(found.attributes.logged){
+      res.render('index');
+    }
+    else{
+      res.redirect('/login');
+    }
+  });
+}
 });
 app.get('/login',function(req,res){
   res.render('login')
 });
 app.get('/create', 
 function(req, res) {
-
-  res.render('index');
+if(!req.body.username)
+     res.redirect('/login');
+  else{
+  var username=req.body.username;
+  new User({username:username}).fetch().then(function(found){
+    if(found.attributes.logged){
+      res.render('index');
+    }
+    else{
+      res.redirect('/login');
+    }
+  });
+}
 });
 
 app.get('/links', 
