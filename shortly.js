@@ -26,38 +26,65 @@ app.use(express.static(__dirname + '/public'));
 app.get('/', 
 function(req, res) {
   //check if there is a username in the body
-  if(!req.body.username)
-     res.redirect('/login');
-  else{
-  var username=req.body.username;
-  new User({username:username}).fetch().then(function(found){
-    if(found.attributes.logged){
-      res.render('index');
-    }
-    else{
-      res.redirect('/login');
-    }
-  });
-}
+//   if(!req.body.username)
+//      res.redirect('/login');
+//   else{
+//   var username=req.body.username;
+//   new User({username:username}).fetch().then(function(found){
+//     if(found.attributes.logged){
+//       res.render('index');
+//     }
+//     else{
+//       res.redirect('/login');
+//     }
+//   });
+// }
+res.render('login');
 });
 app.get('/login',function(req,res){
   res.render('login')
 });
+
+app.post('/login',function(req,res){
+  var user=new User({username:'fatima',passhash:'123'})
+  var username='fatima';
+  new User({username:username}).fetch().then(function(found){
+    if(found){
+       console.log('hii');
+     }
+     else{
+      console.log('wath')
+     }
+     });
+});
+
+app.get('/signup',function(req,res){
+  console.log('im there');
+  res.render('signup');
+});
+
+app.post('/signup',function(req,res){
+  var username=req.username;
+  var passhash=req.password;
+  console.log('signed');
+  res.render('signup');
+});
+
 app.get('/create', 
 function(req, res) {
-if(!req.body.username)
-     res.redirect('/login');
-  else{
-  var username=req.body.username;
-  new User({username:username}).fetch().then(function(found){
-    if(found.attributes.logged){
-      res.render('index');
-    }
-    else{
-      res.redirect('/login');
-    }
-  });
-}
+// if(!req.body.username)
+//      res.redirect('/login');
+//   else{
+//   var username=req.body.username;
+//   new User({username:username}).fetch().then(function(found){
+//     if(found.attributes.logged){
+//       res.render('index');
+//     }
+//     else{
+//       res.redirect('/login');
+//     }
+//   });
+res.render('index');
 });
 
 app.get('/links', 
@@ -78,8 +105,10 @@ function(req, res) {
 
   new Link({ url: uri }).fetch().then(function(found) {
     if (found) {
+      console.log(found);
       res.send(200, found.attributes);
     } else {
+      console.log(found);
       util.getUrlTitle(uri, function(err, title) {
         if (err) {
           console.log('Error reading URL heading: ', err);
