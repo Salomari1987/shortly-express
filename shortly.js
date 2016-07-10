@@ -10,8 +10,13 @@ var User = require('./app/models/user');
 var Links = require('./app/collections/links');
 var Link = require('./app/models/link');
 var Click = require('./app/models/click');
+// var cookieParser = require('cookie-parser');
+var expressSession = require('express-session')
 
 var app = express();
+// app.set('trust proxy', 1) // trust first proxy 
+
+
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -21,69 +26,81 @@ app.use(bodyParser.json());
 // Parse forms (signup/login)
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
+// app.use(cookieParser());
+app.use(expressSession({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}))
 
-
+var sess;
 app.get('/', 
 function(req, res) {
-  //check if there is a username in the body
-//   if(!req.body.username)
-//      res.redirect('/login');
-//   else{
-//   var username=req.body.username;
-//   new User({username:username}).fetch().then(function(found){
-//     if(found.attributes.logged){
-//       res.render('index');
-//     }
-//     else{
-//       res.redirect('/login');
-//     }
-//   });
-// }
-res.render('login');
-});
+sess = sess ? sess : req.session;
+ if (sess.username){
+    res.render("index");
+ } else {
+  res.redirect('/login')
+ }});
+
 app.get('/login',function(req,res){
   res.render('login')
 });
 
 app.post('/login',function(req,res){
-  var user=new User({username:'fatima',passhash:'123'})
-  var username='fatima';
-  new User({username:username}).fetch().then(function(found){
+  var user = req.body.username;
+  var pass = req.body.password;
+  sess = sess ? sess : req.body.session;
+
+  new User({username:user}).fetch().then(function(found){
     if(found){
-       console.log('hii');
-     }
-     else{
-      console.log('wath')
-     }
-     });
+      if (found.attributes.passhash === pass){
+        sess.username = user;
+        res.render('index');
+      } else {
+        console.log('wrong password')
+        res.render('login')
+      }
+    } else {
+      res.render("login")
+      console.log("wrong username")
+      res.send(404)
+     };
+    });
 });
 
 app.get('/signup',function(req,res){
-  console.log('im there');
   res.render('signup');
 });
 
 app.post('/signup',function(req,res){
-  var username=req.username;
-  var passhash=req.password;
-  console.log('signed');
+  var user=req.username;
+  var pass=req.password;
+  sess = sess ? sess : req.body.session;
+
+  new User({username:user}).fetch().then(function(found){
+    if(found){
+      console.log("username exists")
+      res.redirect('/login') 
+    } else {
+        var user = new User({
+          username: user,
+          passhash: pass,
+        });
+
+        user.save().then(function(newUser) {
+          Users.add(newUser);
+          res.send(200, newUser);
+        });      
+     };
+  });
   res.render('signup');
 });
 
 app.get('/create', 
 function(req, res) {
-// if(!req.body.username)
-//      res.redirect('/login');
-//   else{
-//   var username=req.body.username;
-//   new User({username:username}).fetch().then(function(found){
-//     if(found.attributes.logged){
-//       res.render('index');
-//     }
-//     else{
-//       res.redirect('/login');
-//     }
-//   });
+
 res.render('index');
 });
 
